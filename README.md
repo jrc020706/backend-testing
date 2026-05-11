@@ -49,10 +49,19 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### Ejecución en Desarrollo
+### Ejecución en Desarrollo (Local)
 ```bash
 uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
 ```
+
+### Ejecución con Docker (Recomendado) 🐳
+Si tienes Docker instalado, puedes levantar todo el entorno con un solo comando:
+
+```bash
+sudo docker-compose up --build
+```
+*   Esto construirá la imagen, instalará las dependencias y mapeará el puerto **8000**.
+*   Los datos de la base de datos persistirán gracias a los volúmenes configurados.
 
 ## 🛠️ Cómo Probar la API (Swagger UI)
 

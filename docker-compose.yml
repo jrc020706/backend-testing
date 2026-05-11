@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: planora_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - db_data:/app/data
+    environment:
+      - DATABASE_URL=sqlite:///./sql_app.db
+    restart: always
+
+volumes:
+  db_data:
