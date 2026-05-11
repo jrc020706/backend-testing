@@ -1,84 +1,73 @@
 # Planora Backend 🚀
 
-Planora es una API robusta y escalable diseñada para la gestión eficiente de eventos y personal (staff). Este proyecto está construido con **FastAPI**, siguiendo principios de **Clean Architecture** y estándares de desarrollo de nivel senior para garantizar mantenibilidad, seguridad y alto rendimiento.
+Planora es una API robusta y escalable para la gestión integral de eventos y personal (staff). Diseñada bajo principios de **Clean Architecture**, garantiza seguridad de nivel producción y una alta mantenibilidad.
 
 ## 🏛️ Arquitectura del Proyecto
 
-El backend está organizado siguiendo una arquitectura por capas (Layered Architecture), lo que desacopla la lógica de negocio de la infraestructura y los detalles de transporte (API).
+El backend sigue una arquitectura por capas (Layered Architecture), desacoplando la lógica de negocio de la infraestructura:
 
 ```text
 src/
-├── api/            # Capa de Presentación: Definición de rutas y agregación de routers.
-│   └── endpoints/  # Controladores específicos (Users, Staff, Events).
-├── core/           # Núcleo: Configuración global, seguridad (JWT) y constantes.
-├── services/       # Capa de Aplicación: Lógica de negocio principal.
-├── crud/           # Capa de Acceso a Datos: Operaciones CRUD genéricas y específicas.
-├── models/         # Capa de Dominio: Entidades de base de datos (SQLAlchemy/SQLModel).
-├── schemas/        # DTOs (Data Transfer Objects): Modelos de Pydantic para validación.
-├── db/             # Infraestructura: Sesión de DB y configuración de motor.
-├── middlewares/    # Lógica transversal (CORS, Logging, Error Handling).
-└── main.py         # Punto de entrada de la aplicación.
+├── api/            # Capa de Presentación: Routes y Dependency Injection.
+│   └── endpoints/  # Controladores: Auth, Users, Staff, Events.
+├── core/           # Núcleo: Configuración global, Seguridad (JWT & Hashing).
+├── services/       # Capa de Aplicación: Lógica de negocio (ej. validación de fechas).
+├── crud/           # Capa de Acceso a Datos: Operaciones SQL optimizadas.
+├── models/         # Capa de Dominio: Entidades de SQLAlchemy (Integer PKs para SQLite).
+├── schemas/        # DTOs: Modelos de Pydantic para validación y contratos.
+├── db/             # Infraestructura: Sesión y configuración del motor de DB.
+└── main.py         # Punto de entrada y configuración de Middlewares (CORS).
 ```
 
 ## ✨ Características Principales
 
-- **Diseño RESTful**: Endpoints consistentes siguiendo los estándares HTTP.
-- **Validación Estricta**: Uso de Pydantic (Capa de Schemas) para contratos de entrada/salida claros.
-- **Gestión de Usuarios**: Autenticación y autorización (preparado para JWT).
-- **Control de Staff**: Módulos dedicados para la administración de personal.
-- **Gestión de Eventos**: Lógica central para la creación y manejo de eventos.
-- **Manejo de Errores Global**: Middleware diseñado para proporcionar respuestas consistentes.
-
-## 🛠️ Tecnologías Utilizadas
-
-- **FastAPI**: Framwork web moderno y de alto rendimiento.
-- **Pydantic**: Validación de datos y gestión de configuraciones.
-- **SQLModel / SQLAlchemy**: ORM para la interacción con la base de datos.
-- **Python 3.10+**: Aprovechando tipado estático y asincronía (async/await).
+- **Seguridad Avanzada**:
+  - Hashing de contraseñas con **Bcrypt** (Passlib).
+  - Autenticación mediante **JWT (JSON Web Tokens)**.
+  - Protección de rutas mediante dependencias de usuario actual.
+- **Base de Datos**: SQLite optimizado con tipos `Integer` para garantizar autoincremento automático.
+- **Diseño RESTful**: Endpoints consistentes con respuestas estandarizadas y códigos de estado HTTP correctos.
+- **Documentación Interactiva**: Swagger UI con soporte para **HTTP Bearer Authorization**.
 
 ## 🚀 Configuración y Ejecución
 
 ### Requisitos Previos
+- Python 3.12+
+- Entorno virtual (venv)
 
-- Python 3.10 o superior.
-- Entorno virtual (recomendado).
-
-### Instalación
-
-1. Clona el repositorio:
-   ```bash
-   git clone <repository-url>
-   cd Backend-Planora
-   ```
-
-2. Crea y activa un entorno virtual:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # En Windows: venv\Scripts\activate
-   ```
-
-3. Instala las dependencias:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-### Ejecución en Desarrollo
-
-Para iniciar el servidor con recarga automática:
-
+### Instalación rápido
 ```bash
-uvicorn src.main:app --reload
+# 1. Clonar el repositorio
+git clone https://github.com/jrc020706/backend-testing.git
+cd backend-testing
+
+# 2. Configurar entorno virtual
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# 3. Instalar dependencias
+pip install -r requirements.txt
 ```
 
-La documentación interactiva estará disponible en:
-- Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
-- ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+### Ejecución en Desarrollo
+```bash
+uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+```
 
-## 🛡️ Estándares de Calidad
+## 🛠️ Cómo Probar la API (Swagger UI)
 
-- **SOLID**: Aplicación de principios de diseño orientado a objetos.
-- **Clean Code**: Código legible, autodocumentado y testeable.
-- **Documentación OpenAPI**: Generación automática de especificaciones para el equipo de frontend.
+Accede a: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+1. **Crear Rol**: Usa `POST /roles/` para crear el rol "Admin" (obtendrás ID 1).
+2. **Registro**: Crea un usuario en `POST /users/` asociándolo al rol creado.
+3. **Login**: Ve a `POST /auth/login`, introduce tus credenciales y **copia el access_token**.
+4. **Autorizar**: Haz clic en el botón verde **Authorize** arriba a la derecha, pega el token en el campo **Value** y pulsa Authorize.
+5. **Operar**: Ahora todos los candados aparecerán cerrados 🔒 y podrás gestionar Staff y Eventos libremente.
+
+## 🛡️ Estándares y Buenas Prácticas
+- **SOLID & Clean Code**: Separación estricta de responsabilidades.
+- **CORS Configurado**: Preparado para conexiones seguras con frontends (ej. Lovable.dev).
+- **Type Hinting**: Uso extensivo de tipado de Python para reducir errores en tiempo de ejecución.
 
 ---
-Desarrollado con ❤️ por el equipo de Planora.
+Desarrollado con Profesionalismo por el equipo de Planora.
